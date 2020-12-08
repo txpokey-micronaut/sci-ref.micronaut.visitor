@@ -1,0 +1,168 @@
+*.iml
+*.ipr
+*.iws
+*.sublime-project
+*.sublime-workspace
+sdkman/
+stacktrace.log
+.touchFile
+.touchfile
+#_________________________
+# ---> crypto
+*crypto.yml
+crypto/
+
+# ---> git
+.git/
+.BACKUP-GIT/
+.BROKEN-GIT/
+# ---> Gradle
+gradle.bat
+gradlew
+.gradle
+/.gradle
+build/
+dist/
+out/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# ---> Java
+*.class
+classes/
+# ---> Groovy
+.groovy
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# ---> Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# ---> Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# ---> Eclipse
+target-eclipse/
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+.*.swp
+.bower-cache
+.bower-registry
+.DS_Store
+.hgtags
+.idea/
+.insync-trash/
+.sdkman/
+/*.log
+/*.zip
+/.link_to_grails_plugins/
+/cobertura.ser
+/node_modules
+/plugin.xml
+application.log
+bin/
+eoi.sublime-project
+eoi.sublime-workspace
+error.log
+hcscfw.jks
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# TeXlipse plugin
+.texlipse
+
+# ---> Grails
+# .gitignore for Grails 1.2 and 1.3
+# Although this should work for most versions of grails, it is
+# suggested that you use the "grails integrate-with --git" command
+# to generate your .gitignore file.
+
+# web application files
+/web-app/WEB-INF/classes
+
+# default HSQL database files for production mode
+/prodDb.*
+
+# general HSQL database files
+*Db.properties
+*Db.script
+/*DB.*
+
+# logs
+/stacktrace.log
+/test/reports
+/logs
+
+# project release file
+/*.war
+
+# plugin release files
+/*.zip
+/plugin.xml
+
+# older plugin install locations
+/plugins
+/web-app/plugins
+
+# "temporary" build files
+/target
+
+

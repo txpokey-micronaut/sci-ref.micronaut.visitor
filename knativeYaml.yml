@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: "micronaut-demo"
+spec:
+  template:
+    spec:
+      containers:
+      - image: "gcr.io/micronaut-demo/jib-image"
+        name: "micronaut-demo"
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /health/readiness
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /health/liveness
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 10

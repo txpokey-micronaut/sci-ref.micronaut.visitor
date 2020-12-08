@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: sci.category
+testFramework: spock
+sourceLanguage: groovy
+buildTool: gradle
+features: [annotation-api, app-name, gradle, groovy, groovy-application, h2, hibernate-gorm, hibernate-validator, http-client, jib, knative, logback, management, netty-server, openapi, r2dbc, reactor, readme, spock, spring, spring-boot, yaml]
