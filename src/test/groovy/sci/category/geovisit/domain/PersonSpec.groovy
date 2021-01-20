@@ -8,12 +8,13 @@ class PersonSpec extends Specification{
 
     void 'test person.save and Person.all'() {
         given:
-            Map map = [ firstName: "bob" , lastName: "mak" , isCool: true ]
+            Map map = [firstName: "bob", lastName: "mak", isCool: true]
             Person p = new Person(map)
             p.save()
             List plist = Person.all
         expect:
-            assert map
-            assert plist
+            map
+            plist
+            plist.size() == 1
     }
 }
