@@ -4,15 +4,15 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 
 @MicronautTest
-class TempMapSpec extends Specification{
+class TemperatureSpec extends Specification{
 
     void 'test temp.save and *.all'() {
         given:
             Map payload = [firstName: "bob", lastName: "mak", isCool: true]
             Map map = [ description : "this is a test" , payload : payload ]
-            TempMap p = new TempMap(map)
+            Temperature p = new Temperature(map)
             p.save()
-            List plist = TempMap.all
+            List plist = Temperature.all
         expect:
             map
             plist

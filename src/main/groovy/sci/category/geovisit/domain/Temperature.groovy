@@ -9,7 +9,7 @@ import javax.persistence.Id
 
 @CompileStatic
 @Entity
-class TempMap{
+class Temperature{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
