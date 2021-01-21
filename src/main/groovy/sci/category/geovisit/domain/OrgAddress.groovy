@@ -11,16 +11,14 @@ import javax.validation.constraints.Size
 
 @CompileStatic
 @Entity
-class Person{
+class OrgAddress{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-
     Long id
+    String description
+    Map payload = new HashMap()
 //    @NotNull
 //    @Size(min = 5, max = 50)
-    String firstName
 //    @Size(min = 5, max = 50)
-    String lastName
 //    @NotNull
-    Boolean isCool = false
 }
