@@ -74,16 +74,20 @@ class OrgAddressSpec extends Specification{
             child ->
                 def parentDescription = parseToParentDescription( child )
             def parent = OrgAddress.findByDescription(parentDescription)
-                if ( ! graph.containsVertex(parent) ) {
-                    graph.addVertex(parent)
-                } else {
-                    graph.addVertex(child)
-                }
-                graph.addEdge(parent,child)
+            performParentChildRelationship(graph, parent, child)
         }
         expect:
         plist
         plist.size() >= 1
+    }
+
+    private performParentChildRelationship(Graph<OrgAddress, DefaultEdge> graph, OrgAddress parent, OrgAddress child) {
+        if (!graph.containsVertex(parent)) {
+            graph.addVertex(parent)
+        } else {
+            graph.addVertex(child)
+        }
+        graph.addEdge(parent, child)
     }
 
     def parseToParentDescription( OrgAddress child ) {
