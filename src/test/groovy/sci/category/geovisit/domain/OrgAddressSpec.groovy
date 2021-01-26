@@ -1,6 +1,9 @@
 package sci.category.geovisit.domain
 
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import org.jgrapht.Graph
+import org.jgrapht.graph.DefaultDirectedGraph
+import org.jgrapht.graph.DefaultEdge
 import sci.category.geovisit.constant.OrgAddressKey
 import spock.lang.Specification
 
@@ -31,11 +34,7 @@ class OrgAddressSpec extends Specification{
 
     void 'save all scenario'() {
         given:
-        def vertexList = List.of("0.0", "1.0", "1.1", "2.0")
-        def orgList = vertexList.collect { v ->
-            def map = [description: v, payload: [(OrgAddressKey.NodeName): v]]
-            def next = new OrgAddress(map)
-        }
+        List<OrgAddress> orgList = getVertexList()
         List plist = OrgAddress.saveAll(orgList)
         List plist2 = OrgAddress.all
         expect:
@@ -49,32 +48,50 @@ class OrgAddressSpec extends Specification{
                 assert plist.contains(v.id)
         }
     }
+
+    private List<OrgAddress> getVertexList() {
+        def vertexList = List.of("0|0", "1|0", "1|1", "2|0")
+        def orgList = getVertexList(vertexList)
+        orgList
+    }
+
+    private List<OrgAddress> getVertexList(List<String> vertexList) {
+        def orgList = vertexList.collect { v ->
+            def map = [description: v, payload: [(OrgAddressKey.NodeName): v]]
+            def next = new OrgAddress(map)
+        }
+        orgList
+    }
+
     void 'graph construction outside of factory'() {
         given:
-        OrgAddress p = new OrgAddress([description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]])
-        p.save()
-        List plist = OrgAddress.all
+        Graph<OrgAddress, DefaultEdge> graph
+                = new DefaultDirectedGraph<>(DefaultEdge.class);
+        List<OrgAddress> orgList = getVertexList()
+        OrgAddress.saveAll(orgList)
+        List<OrgAddress> plist = OrgAddress.all
+        plist.each {
+            child ->
+                def parentDescription = parseToParentDescription( child )
+            def parent = OrgAddress.findByDescription(parentDescription)
+                if ( ! graph.containsVertex(parent) ) {
+                    graph.addVertex(parent)
+                } else {
+                    graph.addVertex(child)
+                }
+                graph.addEdge(parent,child)
+        }
         expect:
         plist
         plist.size() >= 1
     }
 
-    private def buildListOfParentChildRelationships() {
-        OrgAddress root = new OrgAddress([description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]])
-//        OrgAddress root = new OrgAddress([description: "root", payload: [(OrgAddressKey.NodeName.name()): "0.0"]])
-        OrgAddress z1_0 = new OrgAddress([description: "1.0", payload: [(OrgAddressKey.NodeName): "1.0"]])
-        OrgAddress z1_1 = new OrgAddress([description: "1.1", payload: [(OrgAddressKey.NodeName): "1.1"]])
-        OrgAddress z2_0 = new OrgAddress([description: "2.0", payload: [(OrgAddressKey.NodeName): "2.0"]])
-        Map m_root = [(OrgAddressKey.Parent): root, (OrgAddressKey.Child): root]
-        Map m1_0 = [(OrgAddressKey.Parent): root, (OrgAddressKey.Child): z1_0]
-        Map m1_1 = [(OrgAddressKey.Parent): root, (OrgAddressKey.Child): z1_1]
-        Map m2_0 = [(OrgAddressKey.Parent): z1_0, (OrgAddressKey.Child): z2_0]
-        List saveThese = List.of(root,z1_0,z1_1,z2_0)
-//        root.save()
-//        OrgAddress.save(root)
-//        orgAddressService.save(root)
-//        def result = OrgAddress.saveAll(saveThese)
-        List.of(m_root,m1_0,m1_1,m2_0)
+    def parseToParentDescription( OrgAddress child ) {
+        final DELIMIT = "|"
+        String childDescription = child.description
+        List childEncodingAsList = childDescription.split(DELIMIT)
+        def parentLevel = childEncodingAsList[0] as Integer
+        parentLevel = (--parentLevel < 0) ? 0 : parentLevel
+        String parentDescription = "${parentLevel}${DELIMIT}0"
     }
-
 }
