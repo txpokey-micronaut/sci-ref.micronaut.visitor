@@ -31,18 +31,10 @@ class OrgAddressSpec extends Specification{
 
     void 'save all scenario'() {
         given:
-        def mapList = []
-        def map = [description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]]
-        mapList.add(map)
-        def vertexList = List.of( "1.0", "1.1", "2.0")
-        vertexList.each { v ->
-            def next = [description: v, payload: [(OrgAddressKey.NodeName): v]]
-            mapList.add(next)
-        }
-        def orgList = []
-        mapList.each { m ->
-            def next = new OrgAddress(m)
-            orgList.add(next)
+        def vertexList = List.of( "0.0" , "1.0", "1.1", "2.0")
+        def orgList = vertexList.collect { v ->
+            def map = [description: v, payload: [(OrgAddressKey.NodeName): v]]
+            def next = new OrgAddress(map)
         }
         List plist = OrgAddress.saveAll(orgList)
         List plist2 = OrgAddress.all
@@ -52,6 +44,15 @@ class OrgAddressSpec extends Specification{
         plist2
         plist2.size() >= 1
         plist.size() == plist2.size()
+    }
+    void 'graph construction outside of factory'() {
+        given:
+        OrgAddress p = new OrgAddress([description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]])
+        p.save()
+        List plist = OrgAddress.all
+        expect:
+        plist
+        plist.size() >= 1
     }
 
     private def buildListOfParentChildRelationships() {
