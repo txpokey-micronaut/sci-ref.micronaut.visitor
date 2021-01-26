@@ -31,7 +31,7 @@ class OrgAddressSpec extends Specification{
 
     void 'save all scenario'() {
         given:
-        def vertexList = List.of( "0.0" , "1.0", "1.1", "2.0")
+        def vertexList = List.of("0.0", "1.0", "1.1", "2.0")
         def orgList = vertexList.collect { v ->
             def map = [description: v, payload: [(OrgAddressKey.NodeName): v]]
             def next = new OrgAddress(map)
@@ -44,6 +44,10 @@ class OrgAddressSpec extends Specification{
         plist2
         plist2.size() >= 1
         plist.size() == plist2.size()
+        def l = plist2.collect {
+            OrgAddress v ->
+                assert plist.contains(v.id)
+        }
     }
     void 'graph construction outside of factory'() {
         given:
