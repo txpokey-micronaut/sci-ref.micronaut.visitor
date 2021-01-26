@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @MicronautTest
 class OrgTreeFactorySpec extends Specification{
-    @Inject OrgAddressService orgAddressService
+//    @Inject OrgAddressService orgAddressService
     def "test static newInstance"() {
         given:
         OrgAddress root = buildRootMember()
