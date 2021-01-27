@@ -1,4 +1,4 @@
-package sci.category
+package sci.category.geovisit
 
 import io.micronaut.runtime.Micronaut
 import groovy.transform.CompileStatic
