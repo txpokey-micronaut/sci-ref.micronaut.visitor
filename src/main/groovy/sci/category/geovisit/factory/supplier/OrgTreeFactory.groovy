@@ -27,12 +27,12 @@ class OrgTreeFactory implements FactoryContract<OrgTreeContract>{
         OrgTreeContract contract = new OrgTreeContract(){
             private Map configure = _configure
             private List<Map> bootstrap = _bootstrap
-            private Graph<OrgAddress, DefaultEdge> g
+            private Graph<OrgAddress, DefaultEdge> graph
                     = new DefaultDirectedGraph<>(DefaultEdge.class);
 
             @Override
             Graph get() {
-                return null
+                return graph
             }
 
             @Override
@@ -41,16 +41,15 @@ class OrgTreeFactory implements FactoryContract<OrgTreeContract>{
                 bootstrap.stream().each { m ->
                     m.parent = m[(OrgAddressKey.Parent)]
                     m.child = m[(OrgAddressKey.Child)]
-                    def isRoot = ( configure.root == m.parent )
                     guardedAddVertex(m.parent)
                     guardedAddVertex(m.child)
-                    g.addEdge(m.parent, m.child)
+                    graph.addEdge(m.parent, m.child)
                 }
                 this
             }
             private void guardedAddVertex(OrgAddress oa) {
-                if (!g.containsVertex(oa)) {
-                    g.addVertex(oa)
+                if (!graph.containsVertex(oa)) {
+                    graph.addVertex(oa)
                 }
             }
         }

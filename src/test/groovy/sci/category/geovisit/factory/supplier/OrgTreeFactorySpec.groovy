@@ -9,6 +9,18 @@ import spock.lang.Specification
 
 @MicronautTest(packages="sci.category.geovisit")
 class OrgTreeFactorySpec extends Specification{
+    void 'test persist root via gorm'() {
+        given:
+        OrgAddress p = buildRootMember()
+        p.save()
+        List plist = OrgAddress.all
+        Set set = new HashSet( plist )
+        expect:
+        plist
+        plist.size() >= 1
+        set.contains(p)
+    }
+
     def "test static newInstance"() {
         given:
         OrgAddress root = buildRootMember()
@@ -19,17 +31,8 @@ class OrgTreeFactorySpec extends Specification{
         then:
         contract
     }
-    void 'test non string key on payload'() {
-        given:
-        OrgAddress p = buildRootMember()
-        p.save()
-        List plist = OrgAddress.all
-        expect:
-        plist
-        plist.size() >= 1
-    }
 
-    def "test static build"() {
+    def "test static build with persisted vertex and parent child relationships"() {
         given:
         List<Map> build = buildListOfParentChildRelationships()
         OrgAddress root = build[0][(OrgAddressKey.Parent)]
@@ -38,6 +41,7 @@ class OrgTreeFactorySpec extends Specification{
         OrgTreeContract contract = OrgTreeFactory.build(config)
         then:
         contract
+        contract.get()
     }
 
     private def buildListOfParentChildRelationships() {
@@ -59,7 +63,4 @@ class OrgTreeFactorySpec extends Specification{
         OrgAddress root = new OrgAddress(rootMap)
     }
 
-    private buildRootMember(LinkedHashMap<String, Serializable> rootMap) {
-        OrgAddress root = new OrgAddress(rootMap)
-    }
 }
