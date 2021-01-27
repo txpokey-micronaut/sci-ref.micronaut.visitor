@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.info.*
 
 @OpenAPIDefinition(
     info = @Info(
-            title = "micronaut-demo",
+            title = "micronaut-geovisit",
             version = "0.0"
     )
 )
