@@ -100,20 +100,5 @@ class OrgAddressSpec extends Specification{
         parentLevel = (--parentLevel < 0) ? 0 : parentLevel
         String parentDescription = "${parentLevel}${DELIMIT}0"
     }
-//    .............
-    def "test static newInstance on factory"() {
-        given:
-        OrgAddress root = buildRootMember()
-        root.save()
-        List<Map> build = [[(OrgAddressKey.Root): root]]
-        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
-        when:
-        def contract = OrgTreeFactory.newInstance(config)
-        then:
-        contract
-    }
-    private buildRootMember() {
-        Map rootMap = [description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]]
-        OrgAddress root = new OrgAddress(rootMap)
-    }
+
 }
