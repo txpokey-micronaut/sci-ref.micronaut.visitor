@@ -4,9 +4,7 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.graph.DefaultEdge
-import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
-import sci.category.geovisit.factory.supplier.OrgTreeFactory
 import spock.lang.Specification
 
 @MicronautTest
