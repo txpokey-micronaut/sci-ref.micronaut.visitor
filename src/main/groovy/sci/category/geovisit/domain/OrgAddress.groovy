@@ -9,14 +9,13 @@ import javax.persistence.Id
 
 @CompileStatic
 @Entity
+//@Introspected
 class OrgAddress{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
+//    @NotNull
     String description
     Map payload = new HashMap()
-//    @NotNull
-//    @Size(min = 5, max = 50)
-//    @Size(min = 5, max = 50)
-//    @NotNull
+
 }

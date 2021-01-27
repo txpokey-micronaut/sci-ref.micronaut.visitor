@@ -33,7 +33,6 @@ dependencies {
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator")
     implementation("io.micronaut.groovy:micronaut-hibernate-gorm")
-//    implementation("io.micronaut.configuration:micronaut-hibernate-gorm")
     implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
     implementation("org.springframework.boot:spring-boot-starter")
