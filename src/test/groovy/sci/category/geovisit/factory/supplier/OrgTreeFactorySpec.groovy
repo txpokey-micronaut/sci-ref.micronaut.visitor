@@ -5,10 +5,7 @@ import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.contract.OrgTreeContract
 import sci.category.geovisit.domain.OrgAddress
-import sci.category.geovisit.service.OrgAddressService
 import spock.lang.Specification
-
-import javax.inject.Inject
 
 @MicronautTest
 class OrgTreeFactorySpec extends Specification{
@@ -22,6 +19,16 @@ class OrgTreeFactorySpec extends Specification{
         def contract = OrgTreeFactory.newInstance(config)
         then:
         contract
+    }
+    void 'test non string key on payload'() {
+        given:
+//        OrgAddress p = new OrgAddress([description: "root", payload: [(OrgAddressKey.NodeName): "0.0"]])
+        OrgAddress p = buildRootMember()
+        p.save()
+        List plist = OrgAddress.all
+        expect:
+        plist
+        plist.size() >= 1
     }
 
     def "test static build"() {
@@ -49,7 +56,7 @@ class OrgTreeFactorySpec extends Specification{
 //        root.save()
 //        OrgAddress.save(root)
 //        orgAddressService.save(root)
-//        def result = OrgAddress.saveAll(saveThese)
+        def result = OrgAddress.saveAll(saveThese)
         List.of(m_root,m1_0,m1_1,m2_0)
     }
 
