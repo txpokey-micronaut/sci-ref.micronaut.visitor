@@ -1,6 +1,6 @@
 package sci.category.geovisit.contract
 
 interface FactoryContract<T> extends BuildContract<OrgTreeContract>{
-    FactoryContract<T> newInstance( Map cfg , List<Map> bootstrap )
+    FactoryContract<T> newInstance()
 //    T newInstance( Map cfg  )
 }

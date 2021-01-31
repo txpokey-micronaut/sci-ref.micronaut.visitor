@@ -12,10 +12,8 @@ import sci.category.geovisit.domain.OrgAddress
 class OrgTreeFactory implements FactoryContract<OrgTreeContract>{
 
     static OrgTreeFactory newInstance(Map config) {
-        List<Map> bootstrap = config[FactoryKey.Bootstrap]
-        assert bootstrap
-        OrgTreeFactory factory = new OrgTreeFactory()
-        FactoryContract<OrgTreeContract> contract = factory.newInstance(config, bootstrap)
+        OrgTreeFactory factory = new OrgTreeFactory(config)
+        FactoryContract<OrgTreeContract> contract = factory.newInstance()
     }
 
     static OrgTreeContract build(Map config) {
@@ -23,18 +21,22 @@ class OrgTreeFactory implements FactoryContract<OrgTreeContract>{
         OrgTreeContract contract = factory.build()
         contract
     }
+    //
     private OrgTreeContract contract_
     private Map configure_
     private List<Map> bootstrap_
     private Graph<OrgAddress, DefaultEdge> graph_
-            = new DefaultDirectedGraph<>(DefaultEdge.class);
+            = new DefaultDirectedGraph<>(DefaultEdge.class)
 
-    FactoryContract<OrgTreeContract> newInstance(Map _configure, List<Map> _bootstrap) {
-        configure_ = _configure
-        bootstrap_ = _bootstrap
+    private OrgTreeFactory(config) {
+        configure_ = config
+        bootstrap_ = config[FactoryKey.Bootstrap]
+        assert bootstrap_
+    }
+    FactoryContract<OrgTreeContract> newInstance() {
         contract_ = new OrgTreeContract(){
-            private Map configure = _configure
-            private List<Map> bootstrap = _bootstrap
+            private Map configure = configure_
+            private List<Map> bootstrap = bootstrap_
             private Graph<OrgAddress, DefaultEdge> graph = graph_
 
             @Override

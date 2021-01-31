@@ -27,9 +27,9 @@ class OrgTreeFactorySpec extends Specification{
         List<Map> build = [[(OrgAddressKey.Root): root]]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
-        def contract = OrgTreeFactory.newInstance(config)
+        def factory = OrgTreeFactory.newInstance(config)
         then:
-        contract
+        factory
     }
 
     def "test static build with persisted vertex and parent child relationships"() {
