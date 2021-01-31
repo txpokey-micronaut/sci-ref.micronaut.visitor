@@ -7,22 +7,14 @@ class OrgRelationshipsSupplierTest extends Specification{
 
     def "test build"() {
         given:
-        def foo = []
-        def listLines = new File("src/main/resources/citiesUsa.csv").readLines()
-        def bar = listLines.each {
-            String line ->
+        def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject( [] , {
+            list, line ->
                 List tokens = line.split(DELIMIT)
                 Map map = [state: tokens[1], county: tokens[3], city: tokens[0]]
-                foo.add(map)
-        }
-
-//        when:
-//        // TODO implement stimulus
-//        then:
-//        // TODO implement assertions
+                list + map
+        })
         expect:
-        listLines
-        foo
+        parseFileToMaps
     }
 }
 //String childDescription = child.description
