@@ -50,11 +50,16 @@ class OrgRelationshipsSupplier implements FactoryContract<OrgRelationshipContrac
 
     @Override
     OrgRelationshipContract build() {
-        // TODO
-        def foo = new File("src/main/resources/citiesUsa.csv").eachLine { line ->
-            List<String> tokens = line.split("|") as List<String>
-            Map map = [ state: tokens[1], county: tokens[3], city: tokens[0]]
-        }
+        final DELIMIT = "[|]"
+
+        def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject( [] , {
+            list, line ->
+                List tokens = line.split(DELIMIT)
+                Map map = [state: tokens[1], county: tokens[3], city: tokens[0]]
+                list + map
+        })
+        def statesList = parseFileToMaps.groupBy([{ m -> m.state },{ m -> m.county }])
+
         this.contract_
     }
     private OrgRelationshipContract build0() {
