@@ -16,10 +16,12 @@ class OrgRelationshipsSupplierTest extends Specification{
         })
         def statesList = parseFileToMaps.groupBy([{ m -> m.state },{ m -> m.county }])
         def root = statesList[("State short")]
+        def citiesList = []
         def foo = statesList.each {
             stateKey, Map countiesMap -> countiesMap.each {
                 countyKey, List<Map> cityMapList -> cityMapList.each {
                     city ->
+                        citiesList += city
                         city[(OrgAddressKey.Parent)] = [state: stateKey,county: countyKey]
                         city[(OrgAddressKey.Child)] = city
                 }
