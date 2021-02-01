@@ -1,5 +1,5 @@
 package sci.category.geovisit.contract
 
-interface OrgRelationshipContract extends SupplierContract<Map>{
+interface OrgRelationshipContract extends SupplierContract<List<Map>>{
 
 }

@@ -3,7 +3,7 @@ package sci.category.geovisit.factory.supplier
 import sci.category.geovisit.constant.OrgAddressKey
 import spock.lang.Specification
 
-class OrgRelationshipsSupplierTest extends Specification{
+class OrgRelationshipSupplierTest extends Specification{
     final static DELIMIT = "[|]"
 
     def "test build"() {
@@ -15,7 +15,6 @@ class OrgRelationshipsSupplierTest extends Specification{
                 list + map
         })
         def statesList = parseFileToMaps.groupBy([{ m -> m.state },{ m -> m.county }])
-//        def root = statesList[("State short")]
         def root = [state: "State short",county: "County"]
         def citiesList = []
         def stateCountyMap = [:]
