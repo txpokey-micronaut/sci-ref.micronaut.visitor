@@ -1,4 +1,4 @@
-package sci.category.geovisit.factory.supplier
+package sci.category.geovisit.supplier
 
 import sci.category.geovisit.constant.OrgAddressKey
 import spock.lang.Specification

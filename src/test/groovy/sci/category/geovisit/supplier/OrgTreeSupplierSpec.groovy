@@ -1,4 +1,4 @@
-package sci.category.geovisit.factory.supplier
+package sci.category.geovisit.supplier
 
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import sci.category.geovisit.constant.FactoryKey
@@ -8,7 +8,7 @@ import sci.category.geovisit.domain.OrgAddress
 import spock.lang.Specification
 
 @MicronautTest(packages="sci.category.geovisit")
-class OrgTreeFactorySpec extends Specification{
+class OrgTreeSupplierSpec extends Specification{
     void 'test persist root via gorm'() {
         given:
         OrgAddress p = buildRootMember()
@@ -27,7 +27,7 @@ class OrgTreeFactorySpec extends Specification{
         List<Map> build = [[(OrgAddressKey.Root): root]]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
-        def factory = OrgTreeFactory.newInstance(config)
+        def factory = OrgTreeSupplier.newInstance(config)
         then:
         factory
     }
@@ -38,7 +38,7 @@ class OrgTreeFactorySpec extends Specification{
         OrgAddress root = build[0][(OrgAddressKey.Parent)]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
-        OrgTreeContract contract = OrgTreeFactory.build(config)
+        OrgTreeContract contract = OrgTreeSupplier.build(config)
         then:
         contract
         contract.get()
