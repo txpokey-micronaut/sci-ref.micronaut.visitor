@@ -6,27 +6,26 @@ import sci.category.geovisit.contract.BuildContract
 import sci.category.geovisit.contract.OrgRelationshipContract
 import sci.category.geovisit.contract.SupplierContract
 
-class OrgRelationshipSupplier implements SupplierContract<OrgRelationshipContract>{
-    private List<Map> bootstrapData
-    private Map root
-//    private Builder builder
+class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
+    private Builder builder
 
     private OrgRelationshipSupplier() {}
 
     private OrgRelationshipSupplier(Builder _builder) {
-//        this.builder = _builder
-        this.bootstrapData = (List<Map>) _builder.buildConfig[FactoryKey.Bootstrap]
-        this.root = _builder.buildConfig[OrgAddressKey.Root]
+        this.builder = _builder
     }
 
     @Override
-    OrgRelationshipContract get() {
-        return bootstrapData
+    List<Map> get() {
+        return builder.buildConfig[FactoryKey.Bootstrap]
+    }
+    Map getRoot() {
+        builder.buildConfig[OrgAddressKey.Root]
     }
 
     static class Builder implements BuildContract<OrgRelationshipSupplier>{
         private Map buildConfig
-        private List<Map> bootstrapData
+//        private List<Map> bootstrapData
 
         static Builder newInstance(Map cfg) {
             return new Builder(cfg)
@@ -34,13 +33,14 @@ class OrgRelationshipSupplier implements SupplierContract<OrgRelationshipContrac
 
         private Builder(cfg) {
             buildConfig = cfg
-            bootstrapData = buildConfig[FactoryKey.Bootstrap]
+//            bootstrapData = buildConfig[FactoryKey.Bootstrap]
 //            assert bootstrapData
         }
 
         @Override
         OrgRelationshipSupplier build() { // TODO get CSV location from cfg
             final DELIMIT = "[|]"
+            OrgRelationshipSupplier supplier = new OrgRelationshipSupplier(this)
 
             def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject([], {
                 list, line ->
@@ -71,7 +71,8 @@ class OrgRelationshipSupplier implements SupplierContract<OrgRelationshipContrac
             buildConfig[FactoryKey.Bootstrap] = statesList
             buildConfig[OrgAddressKey.Root] = root
             buildConfig.root = buildConfig[((OrgAddressKey.Root))]
-            OrgRelationshipSupplier supplier = new OrgRelationshipSupplier(this)
+//            OrgRelationshipSupplier supplier = new OrgRelationshipSupplier(this)
+            supplier
         }
 
     }
