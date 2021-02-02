@@ -3,7 +3,6 @@ package sci.category.geovisit.supplier
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
-import sci.category.geovisit.contract.OrgTreeContract
 import sci.category.geovisit.domain.OrgAddress
 import spock.lang.Specification
 
