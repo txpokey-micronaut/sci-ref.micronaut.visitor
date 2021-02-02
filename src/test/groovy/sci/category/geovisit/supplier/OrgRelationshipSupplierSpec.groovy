@@ -49,5 +49,7 @@ class OrgRelationshipSupplierSpec extends Specification{
         def supplier = builder.build()
         expect:
         supplier
+        supplier.get()
+        supplier.getRoot()
     }
 }

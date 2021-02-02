@@ -6,20 +6,20 @@ import sci.category.geovisit.contract.BuildContract
 import sci.category.geovisit.contract.SupplierContract
 
 class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
-    private Builder builder
+    private Map buildConfig
 
     private OrgRelationshipSupplier() {}
 
     private OrgRelationshipSupplier(Builder _builder) {
-        this.builder = _builder
+        this.buildConfig = _builder.buildConfig
     }
 
     @Override
     List<Map> get() {
-        return builder.buildConfig[FactoryKey.Bootstrap]
+        return buildConfig[FactoryKey.Bootstrap]
     }
     Map getRoot() {
-        builder.buildConfig[OrgAddressKey.Root]
+        buildConfig[OrgAddressKey.Root]
     }
 
     static class Builder implements BuildContract<OrgRelationshipSupplier>{
@@ -44,11 +44,10 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
                     Map map = [state: tokens[1], county: tokens[3], city: tokens[0]]
                     list + map
             })
-            def statesList = parseFileToMaps.groupBy([{ m -> m.state }, { m -> m.county }])
-            final def root = [state: "State short", county: "County"]
+            def statesMap = parseFileToMaps.groupBy([{ m -> m.state }, { m -> m.county }])
             def citiesList = []
-            def stateCountyMap = [:]
-            statesList.each {
+            def stateCountyMap = [:] // hysteresis for parent map
+            statesMap.each {
                 stateKey, Map countiesMap ->
                     countiesMap.each {
                         countyKey, List<Map> cityMapList ->
@@ -64,7 +63,8 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
                             }
                     }
             }
-            buildConfig[FactoryKey.Bootstrap] = statesList
+            buildConfig[FactoryKey.Bootstrap] = citiesList
+            final def root = [state: "State short", county: "County"]
             buildConfig[OrgAddressKey.Root] = root
             supplier
         }
