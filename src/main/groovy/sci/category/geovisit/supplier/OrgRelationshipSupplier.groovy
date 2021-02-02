@@ -6,7 +6,7 @@ import sci.category.geovisit.contract.BuildContract
 import sci.category.geovisit.contract.SupplierContract
 import sci.category.geovisit.domain.OrgAddress
 
-class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
+class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
     private Map buildConfig
 
     private OrgRelationshipSupplier() {}
@@ -16,10 +16,10 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
     }
 
     @Override
-    List<Map> get() {
+    List<OrgAddress> get() {
         return buildConfig[FactoryKey.Bootstrap]
     }
-    Map getRoot() {
+    OrgAddress getRoot() {
         buildConfig[OrgAddressKey.Root]
     }
 
@@ -61,21 +61,22 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
                                         def countyAddressMap = [description: fullCountyKey, payload: countyPayloadMap]
                                         countyOrgAddress = new OrgAddress(countyAddressMap)
                                         stateCountyMap.put(fullCountyKey, countyOrgAddress)
-//                                        countyOrgAddress.save()
                                     }
                                     def fullCityKey = "${fullCountyKey}|${cityMap.city}" as String
                                     def cityAddressMap = [description: fullCityKey, payload: cityMap]
                                     def city = new OrgAddress(cityAddressMap)
                                     citiesList += city
-                                    cityAddressMap[(OrgAddressKey.Parent)] = countyOrgAddress
-                                    cityAddressMap[(OrgAddressKey.Child)] = city
+                                    cityAddressMap.payload[(OrgAddressKey.Parent)] = countyOrgAddress
+                                    cityAddressMap.payload[(OrgAddressKey.Child)] = city
                             } //cityMapList
                     } //countiesMap
             } // statesMap
             OrgAddress.saveAll(citiesList)
             OrgAddress.saveAll(stateCountyMap.values())
             buildConfig[FactoryKey.Bootstrap] = citiesList
-            final def root = [state: "State short", county: "County"]
+            final def rootAddressMap = [description: "root", payload: [state: "State short", county: "County"]]
+            final def root = new OrgAddress(rootAddressMap)
+            root.save()
             buildConfig[OrgAddressKey.Root] = root
             supplier
         }

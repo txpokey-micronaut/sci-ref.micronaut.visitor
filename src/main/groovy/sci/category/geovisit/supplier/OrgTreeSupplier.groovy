@@ -19,7 +19,7 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
         return graph
     }
 
-    Map getRoot() {
+    OrgAddress getRoot() {
         return builder.buildConfig.root
     }
     private OrgTreeSupplier() {}
@@ -46,11 +46,11 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
             buildConfig.root = buildConfig[((OrgAddressKey.Root))]
             final def supplierGraph = supplier.get()
             bootstrapData.stream().each { m ->
-                m.parent = m[(OrgAddressKey.Parent)]
-                m.child = m[(OrgAddressKey.Child)]
-                guardedAddVertex(supplierGraph, m.parent)
-                guardedAddVertex(supplierGraph, m.child)
-                supplierGraph.addEdge(m.parent, m.child)
+                def parent = m.payload[(OrgAddressKey.Parent)]
+                def child = m.payload[(OrgAddressKey.Child)]
+                guardedAddVertex(supplierGraph, parent)
+                guardedAddVertex(supplierGraph, child)
+                supplierGraph.addEdge(parent, child)
             }
             return supplier
         }
@@ -61,6 +61,6 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
             }
         }
         private Map buildConfig
-        private List<Map> bootstrapData
+        private List<OrgAddress> bootstrapData
     }
 }

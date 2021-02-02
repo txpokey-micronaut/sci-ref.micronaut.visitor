@@ -35,8 +35,8 @@ class OrgTreeSupplierSpec extends Specification{
         given:
         OrgRelationshipSupplier orgRelationshipsSupplier = getOrgRelationshipsSupplier()
         def root = orgRelationshipsSupplier.root
-        List<Map> bootstrapData = orgRelationshipsSupplier.get()
-        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): bootstrapData]
+        def bootstrapData = orgRelationshipsSupplier.get()
+        def config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): bootstrapData]
         when:
         def builder = OrgTreeSupplier.Builder.newInstance(config)
         def orgTreeSupplier = builder.build()
