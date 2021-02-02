@@ -3,7 +3,6 @@ package sci.category.geovisit.supplier
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.contract.BuildContract
-import sci.category.geovisit.contract.OrgRelationshipContract
 import sci.category.geovisit.contract.SupplierContract
 
 class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
@@ -25,7 +24,6 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
 
     static class Builder implements BuildContract<OrgRelationshipSupplier>{
         private Map buildConfig
-//        private List<Map> bootstrapData
 
         static Builder newInstance(Map cfg) {
             return new Builder(cfg)
@@ -33,8 +31,6 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
 
         private Builder(cfg) {
             buildConfig = cfg
-//            bootstrapData = buildConfig[FactoryKey.Bootstrap]
-//            assert bootstrapData
         }
 
         @Override
@@ -70,8 +66,6 @@ class OrgRelationshipSupplier implements SupplierContract<List<Map>>{
             }
             buildConfig[FactoryKey.Bootstrap] = statesList
             buildConfig[OrgAddressKey.Root] = root
-            buildConfig.root = buildConfig[((OrgAddressKey.Root))]
-//            OrgRelationshipSupplier supplier = new OrgRelationshipSupplier(this)
             supplier
         }
 

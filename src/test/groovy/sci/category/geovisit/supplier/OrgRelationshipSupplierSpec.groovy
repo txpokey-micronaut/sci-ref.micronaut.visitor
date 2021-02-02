@@ -2,7 +2,6 @@ package sci.category.geovisit.supplier
 
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
-import sci.category.geovisit.domain.OrgAddress
 import spock.lang.Specification
 
 class OrgRelationshipSupplierSpec extends Specification{
