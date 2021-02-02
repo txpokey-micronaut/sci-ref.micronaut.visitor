@@ -1,12 +1,14 @@
 package sci.category.geovisit.supplier
 
+import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
+import sci.category.geovisit.domain.OrgAddress
 import spock.lang.Specification
 
-class OrgRelationshipSupplierTest extends Specification{
+class OrgRelationshipSupplierSpec extends Specification{
     final static DELIMIT = "[|]"
 
-    def "test build"() {
+    def "test explicit TDD build"() {
         given:
         def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject( [] , {
             list, line ->
@@ -36,5 +38,17 @@ class OrgRelationshipSupplierTest extends Specification{
         parseFileToMaps
         statesList
         statesList == foo
+    }
+
+    def "test static newInstance"() {
+        given:
+        def root = [:]
+        List<Map> build = [[(OrgAddressKey.Root): root]]
+        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
+        def builder = OrgRelationshipSupplier.Builder.newInstance(config)
+        assert builder
+        def supplier = builder.build()
+        expect:
+        supplier
     }
 }

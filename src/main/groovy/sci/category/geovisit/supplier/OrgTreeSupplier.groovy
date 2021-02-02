@@ -25,8 +25,6 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
     }
 
     static class Builder implements BuildContract<OrgTreeSupplier>{
-        private Map buildConfig
-        private List<Map> bootstrapData
 
         static Builder newInstance(Map cfg) {
             return new Builder(cfg)
@@ -58,5 +56,7 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
                 supplierGraph.addVertex(oa)
             }
         }
+        private Map buildConfig
+        private List<Map> bootstrapData
     }
 }
