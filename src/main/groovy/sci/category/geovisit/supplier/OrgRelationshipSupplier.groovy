@@ -7,11 +7,11 @@ import sci.category.geovisit.contract.FactoryContract
 import sci.category.geovisit.contract.OrgRelationshipContract
 
 class OrgRelationshipSupplier implements FactoryContract<OrgRelationshipContract>{
-
-    static OrgRelationshipSupplier newInstance(Map config) {
-        OrgRelationshipSupplier factory = new OrgRelationshipSupplier(config)
-        FactoryContract<OrgRelationshipContract> contract = factory.newInstance()
-    }
+//
+//    static OrgRelationshipSupplier newInstance(Map config) {
+//        OrgRelationshipSupplier factory = new OrgRelationshipSupplier(config)
+//        FactoryContract<OrgRelationshipContract> contract = factory.newInstance()
+//    }
 
     static OrgRelationshipContract build(Map config) {
         FactoryContract<OrgRelationshipContract> factory = newInstance(config)
@@ -27,18 +27,18 @@ class OrgRelationshipSupplier implements FactoryContract<OrgRelationshipContract
         factoryConfigure = _config
     }
 
-    FactoryContract<OrgRelationshipContract> newInstance() {
-        factoryContract = new OrgRelationshipContract(){
-            private Map configure = factoryConfigure
-            private List<Map> bootstrap = factoryBootstrap
-
-            @Override
-            List<Map> get() {
-                return bootstrap
-            }
-        }
-        this
-    }
+//    FactoryContract<OrgRelationshipContract> newInstance() {
+//        factoryContract = new OrgRelationshipContract(){
+//            private Map configure = factoryConfigure
+//            private List<Map> bootstrap = factoryBootstrap
+//
+//            @Override
+//            List<Map> get() {
+//                return bootstrap
+//            }
+//        }
+//        this
+//    }
 
 //    @Override
     OrgRelationshipContract build() {
@@ -74,5 +74,14 @@ class OrgRelationshipSupplier implements FactoryContract<OrgRelationshipContract
         factoryConfigure[OrgAddressKey.Root] = root
         this.factoryContract
     }
+//...
+    @Override
+    OrgRelationshipContract newInstance() {
+        return null
+    }
 
+    @Override
+    OrgRelationshipContract newInstance(Map cfg) {
+        return null
+    }
 }

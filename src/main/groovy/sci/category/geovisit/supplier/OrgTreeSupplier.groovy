@@ -6,28 +6,28 @@ import org.jgrapht.graph.DefaultEdge
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.contract.BuildContract
-import sci.category.geovisit.contract.FactoryContract
 import sci.category.geovisit.contract.SupplierContract
 import sci.category.geovisit.domain.OrgAddress
 
 class OrgTreeSupplier implements SupplierContract<Graph>{
     private Graph<OrgAddress, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class)
+    private Builder builder
 
     @Override
     Graph get() {
         return graph
     }
 
-    static class Builder implements BuildContract<OrgTreeSupplier>, FactoryContract<Builder>{
+    private OrgTreeSupplier() {}
+
+    private OrgTreeSupplier(Builder _builder) {
+        this.builder = _builder
+    }
+
+    static class Builder implements BuildContract<OrgTreeSupplier>{
         private Map buildConfig
         private List<Map> bootstrapData
 
-        @Override
-        static Builder newInstance() {
-            return null
-        }
-
-        @Override
         static Builder newInstance(Map cfg) {
             return new Builder(cfg)
         }
@@ -46,8 +46,8 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
             bootstrapData.stream().each { m ->
                 m.parent = m[(OrgAddressKey.Parent)]
                 m.child = m[(OrgAddressKey.Child)]
-                guardedAddVertex(supplierGraph,m.parent)
-                guardedAddVertex(supplierGraph,m.child)
+                guardedAddVertex(supplierGraph, m.parent)
+                guardedAddVertex(supplierGraph, m.child)
                 supplierGraph.addEdge(m.parent, m.child)
             }
             return supplier
@@ -58,14 +58,5 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
                 supplierGraph.addVertex(oa)
             }
         }
-
     }
-
-    private OrgTreeSupplier(Builder builder) {
-        OrgTreeSupplier contract = new OrgTreeSupplier(){
-//            private Map configure = builder.buildConfig
-//            private List<Map> bootstrap = builder.bootstrapData
-        }
-    }
-
 }

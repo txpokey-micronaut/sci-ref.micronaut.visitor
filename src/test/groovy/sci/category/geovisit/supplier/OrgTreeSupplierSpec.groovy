@@ -27,9 +27,9 @@ class OrgTreeSupplierSpec extends Specification{
         List<Map> build = [[(OrgAddressKey.Root): root]]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
-        def factory = OrgTreeSupplier.newInstance(config)
+        def builder = OrgTreeSupplier.Builder.newInstance(config)
         then:
-        factory
+        builder
     }
 
     def "test static build with persisted vertex and parent child relationships"() {
@@ -38,10 +38,12 @@ class OrgTreeSupplierSpec extends Specification{
         OrgAddress root = build[0][(OrgAddressKey.Parent)]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
-        OrgTreeContract contract = OrgTreeSupplier.build(config)
+        def builder = OrgTreeSupplier.Builder.newInstance(config)
+        def contract = builder.build()
         then:
         contract
-        contract.get()
+        def graph = contract.get()
+        graph
     }
 
     private def buildListOfParentChildRelationships() {
