@@ -31,9 +31,34 @@ class OrgTreeSupplierSpec extends Specification{
         builder
     }
 
-    def "test static build with persisted vertex and parent child relationships"() {
+    def "test org relationships fed into org tree supplier"() {
         given:
-        List<Map> build = buildListOfParentChildRelationships()
+        OrgRelationshipSupplier orgRelationshipsSupplier = getOrgRelationshipsSupplier()
+        def root = orgRelationshipsSupplier.root
+        List<Map> bootstrapData = orgRelationshipsSupplier.get()
+        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): bootstrapData]
+        when:
+        def builder = OrgTreeSupplier.Builder.newInstance(config)
+        def orgTreeSupplier = builder.build()
+        then:
+        orgTreeSupplier
+        orgTreeSupplier.get()
+        orgTreeSupplier.getRoot()
+        true
+    }
+
+    private getOrgRelationshipsSupplier() {
+        def root = [:]
+        List<Map> build = [[(OrgAddressKey.Root): root]]
+        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
+        def orgRelationshipsBuilder = OrgRelationshipSupplier.Builder.newInstance(config)
+        assert orgRelationshipsBuilder
+        def orgRelationshipsSupplier = orgRelationshipsBuilder.build()
+    }
+
+    def "test static build with fake data as persisted vertex and parent child relationships"() {
+        given:
+        List<Map> build = buildListOfFakeParentChildRelationships()
         OrgAddress root = build[0][(OrgAddressKey.Parent)]
         Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
         when:
@@ -41,11 +66,12 @@ class OrgTreeSupplierSpec extends Specification{
         def contract = builder.build()
         then:
         contract
+
         def graph = contract.get()
         graph
     }
 
-    private def buildListOfParentChildRelationships() {
+    private def buildListOfFakeParentChildRelationships() {
         OrgAddress root = new OrgAddress(getMapToInitializeOrgAddressTestCase("root","0.0"))
         OrgAddress z1_0 = new OrgAddress(getMapToInitializeOrgAddressTestCase("1.0","1.0"))
         OrgAddress z1_1 = new OrgAddress(getMapToInitializeOrgAddressTestCase("1.1","1.1"))

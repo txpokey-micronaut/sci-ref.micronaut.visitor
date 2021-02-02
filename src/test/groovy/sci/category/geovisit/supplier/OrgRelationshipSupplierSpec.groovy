@@ -1,37 +1,41 @@
 package sci.category.geovisit.supplier
 
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
 import spock.lang.Specification
 
+@MicronautTest(packages = "sci.category.geovisit")
 class OrgRelationshipSupplierSpec extends Specification{
     final static DELIMIT = "[|]"
 
     def "test explicit TDD build"() {
         given:
-        def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject( [] , {
+        def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject([], {
             list, line ->
                 List tokens = line.split(DELIMIT)
                 Map map = [state: tokens[1], county: tokens[3], city: tokens[0]]
                 list + map
         })
-        def statesList = parseFileToMaps.groupBy([{ m -> m.state },{ m -> m.county }])
-        def root = [state: "State short",county: "County"]
+        def statesList = parseFileToMaps.groupBy([{ m -> m.state }, { m -> m.county }])
+        def root = [state: "State short", county: "County"]
         def citiesList = []
         def stateCountyMap = [:]
         def foo = statesList.each {
-            stateKey, Map countiesMap -> countiesMap.each {
-                countyKey, List<Map> cityMapList -> cityMapList.each {
-                    city ->
-                        citiesList += city
-                        def key = "${stateKey}|${countyKey}"
-                        def parent = stateCountyMap.get( key )
-                        parent = parent ?: [state: stateKey,county: countyKey]
-                        stateCountyMap.put(key,parent)
-                        city[(OrgAddressKey.Parent)] = parent
-                        city[(OrgAddressKey.Child)] = city
+            stateKey, Map countiesMap ->
+                countiesMap.each {
+                    countyKey, List<Map> cityMapList ->
+                        cityMapList.each {
+                            city ->
+                                citiesList += city
+                                def key = "${stateKey}|${countyKey}"
+                                def parent = stateCountyMap.get(key)
+                                parent = parent ?: [state: stateKey, county: countyKey]
+                                stateCountyMap.put(key, parent)
+                                city[(OrgAddressKey.Parent)] = parent
+                                city[(OrgAddressKey.Child)] = city
+                        }
                 }
-            }
         }
         expect:
         parseFileToMaps

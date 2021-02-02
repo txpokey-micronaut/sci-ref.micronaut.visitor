@@ -12,12 +12,16 @@ import sci.category.geovisit.domain.OrgAddress
 class OrgTreeSupplier implements SupplierContract<Graph>{
     private Graph<OrgAddress, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class)
     private Builder builder
+    private Map root
 
     @Override
     Graph get() {
         return graph
     }
 
+    Map getRoot() {
+        return builder.buildConfig.root
+    }
     private OrgTreeSupplier() {}
 
     private OrgTreeSupplier(Builder _builder) {
