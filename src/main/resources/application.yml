@@ -24,6 +24,11 @@ r2dbc:
       username: sa
       password: ''
 
+api:
+  key: 9ecd4d849bec4bad904195112210302
+  url: https://api.weatherapi.com/v1/current.json
+  example: https://api.weatherapi.com/v1/current.json?key=9ecd4d849bec4bad904195112210302&q=plano,tx
+
 endpoints:
   loggers:
     enabled: true

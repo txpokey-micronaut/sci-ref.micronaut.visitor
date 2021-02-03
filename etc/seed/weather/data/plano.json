@@ -1,0 +1,41 @@
+{
+  "location": {
+    "name": "Plano",
+    "region": "Texas",
+    "country": "United States of America",
+    "lat": 33.02,
+    "lon": -96.7,
+    "tz_id": "America/Chicago",
+    "localtime_epoch": 1612382258,
+    "localtime": "2021-02-03 13:57"
+  },
+  "current": {
+    "last_updated_epoch": 1612381507,
+    "last_updated": "2021-02-03 13:45",
+    "temp_c": 19,
+    "temp_f": 66.2,
+    "is_day": 1,
+    "condition": {
+      "text": "Sunny",
+      "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+      "code": 1000
+    },
+    "wind_mph": 13.6,
+    "wind_kph": 22,
+    "wind_degree": 160,
+    "wind_dir": "SSE",
+    "pressure_mb": 1015,
+    "pressure_in": 30.4,
+    "precip_mm": 0,
+    "precip_in": 0,
+    "humidity": 52,
+    "cloud": 0,
+    "feelslike_c": 19,
+    "feelslike_f": 66.2,
+    "vis_km": 16,
+    "vis_miles": 9,
+    "uv": 3,
+    "gust_mph": 18.3,
+    "gust_kph": 29.5
+  }
+}
