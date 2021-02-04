@@ -22,8 +22,6 @@ class TemperatureSupplierSpec extends Specification{
     TemperatureSupplier supplier
 
     def "sanityCheck"(){
-//        when:
-//        TemperatureSupplier supplier = new TemperatureSupplier()
         expect:
         supplier
         when:
@@ -56,17 +54,7 @@ class TemperatureSupplierSpec extends Specification{
     def "refactor TDD on http client for temperature by city and state"() {
         when:
         Map cityStateMap = [city: "plano", state: "tx"]
-        HttpResponse<Map> rsp = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
-
-        then: 'the endpoint can be accessed'
-        rsp.status == HttpStatus.OK // <5>
-        rsp.body() // <6>
-        when:
-        Map body = rsp.body()
-        Map tempPayloadMap = [ city: body.location.name , state: body.location.region , temp: body.current.temp_c ]
-        Map tempConstructorMap = [description: "${tempPayloadMap.city}|${tempPayloadMap.state}", payload:
-                tempPayloadMap ]
-        Temperature tempDomain = new Temperature(tempConstructorMap)
+        Temperature tempDomain = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
         tempDomain.save()
         then:
         def all = Temperature.all
