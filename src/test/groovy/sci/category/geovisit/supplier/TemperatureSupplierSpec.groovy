@@ -18,10 +18,45 @@ class TemperatureSupplierSpec extends Specification{
     @Client("https://api.weatherapi.com/v1")
     RxStreamingHttpClient client // <
 
-    def "tst"() {
+    @Inject
+    TemperatureSupplier supplier
+
+    def "sanityCheck"(){
+//        when:
+//        TemperatureSupplier supplier = new TemperatureSupplier()
+        expect:
+        supplier
+        when:
+        RxStreamingHttpClient client = supplier.client
+        then:
+        client
+    }
+    def "test TDD on http clienting for temperature by city and state"() {
         when:
         HttpRequest request = HttpRequest.GET('/current.json?key=9ecd4d849bec4bad904195112210302&q=plano,tx')
         HttpResponse<Map> rsp = client.toBlocking().exchange(request, Argument.of(HashMap.class))
+
+        then: 'the endpoint can be accessed'
+        rsp.status == HttpStatus.OK // <5>
+        rsp.body() // <6>
+        when:
+        Map body = rsp.body()
+        Map tempPayloadMap = [ city: body.location.name , state: body.location.region , temp: body.current.temp_c ]
+        Map tempConstructorMap = [description: "${tempPayloadMap.city}|${tempPayloadMap.state}", payload:
+                tempPayloadMap ]
+        Temperature tempDomain = new Temperature(tempConstructorMap)
+        tempDomain.save()
+        then:
+        def all = Temperature.all
+        1 <= all.size()
+        Set set = new HashSet( all )
+        set.contains(tempDomain)
+        true
+    }
+    def "refactor TDD on http client for temperature by city and state"() {
+        when:
+        Map cityStateMap = [city: "plano", state: "tx"]
+        HttpResponse<Map> rsp = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
 
         then: 'the endpoint can be accessed'
         rsp.status == HttpStatus.OK // <5>
