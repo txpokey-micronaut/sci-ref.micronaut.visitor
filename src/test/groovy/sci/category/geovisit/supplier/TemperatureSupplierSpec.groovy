@@ -7,6 +7,8 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxStreamingHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import sci.category.geovisit.constant.FactoryKey
+import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.domain.Temperature
 import spock.lang.Specification
 
@@ -62,5 +64,20 @@ class TemperatureSupplierSpec extends Specification{
         Set set = new HashSet( all )
         set.contains(tempDomain)
         true
+    }
+
+    def "test static newInstance"() {
+        given:
+//        def root = [:]
+//        List<Map> build = [[(OrgAddressKey.Root): root]]
+//        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
+        def builder = TemperatureSupplier.Builder.newInstance([:])
+        assert builder
+        def supplier = builder.build()
+        expect:
+        supplier
+        def supply = supplier.get()
+        supply
+//        supplier.getRoot()
     }
 }
