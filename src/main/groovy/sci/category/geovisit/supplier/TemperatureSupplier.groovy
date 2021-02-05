@@ -21,10 +21,7 @@ import javax.inject.Inject
 @Service(TemperatureSupplier)
 class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     private Map buildConfig
-
-    @Inject
-    @Client("https://api.weatherapi.com/v1")
-    RxStreamingHttpClient client
+    private RxStreamingHttpClient client
 
     @Override
     List<Temperature> get() {
@@ -35,44 +32,31 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         return client
     }
 
-    Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {
-        final def weatherApiKey = '9ecd4d849bec4bad904195112210302'
-        HttpResponse<Map> rsp = getTemperatureFromRemoteApi(cityAndState, weatherApiKey)
-        Temperature tempDomain = getTemperatureDomainFromHttpResponse(rsp)
-        tempDomain
-    }
-
-    private HttpResponse<Map> getTemperatureFromRemoteApi(Map cityAndState, weatherApiKey) {
-        def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}"
-        HttpRequest request = HttpRequest.GET("/current.json?key=${weatherApiKey}&q=${cityStateQueryParameter}")
-        HttpResponse<Map> rsp = getClient().toBlocking().exchange(request, Argument.of(HashMap.class as Class<Object>)) as HttpResponse<Map>
-        rsp
-    }
-
-    private Temperature getTemperatureDomainFromHttpResponse(HttpResponse<Map> rsp) {
-        Map body = rsp.body()
-        Map location = body.location as Map
-        Map current = body.current as Map
-        Map tempPayloadMap = [city: location.name, state: location.region, temp: current.temp_c]
-        Map tempConstructorMap = [description: "${tempPayloadMap.city}|${tempPayloadMap.state}", payload:
-                tempPayloadMap]
-        Temperature tempDomain = new Temperature(tempConstructorMap)
-        tempDomain
-    }
-
+    // TODO makes no sense. need to inject client into builder and then DI on constructor here
     TemperatureSupplier(Builder builder) {
         buildConfig = builder.builderConfig as Map
+    }
+    TemperatureSupplier() {
     }
 
     static class Builder implements BuildContract<TemperatureSupplier>{
 //        @Inject
-        private TemperatureSupplier supplier
+//        @Client("https://api.weatherapi.com/v1")
+        private RxStreamingHttpClient client
         private Map builderConfig
+
         private Builder(Map cfg) {
             builderConfig = cfg
         }
-        static Builder newInstance(Map cfg) {
-            return new Builder(cfg)
+        private Builder(RxStreamingHttpClient _client, Map cfg) {
+            builderConfig = cfg
+            client = _client
+        }
+        RxStreamingHttpClient getClient() {
+            return client
+        }
+        static Builder newInstance(RxStreamingHttpClient client, Map cfg) {
+            return new Builder(client, cfg)
         }
         @Override
         TemperatureSupplier build() {
@@ -89,6 +73,32 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
             builderConfig[FactoryKey.Bootstrap] = tempsList
             this
         }
+
+        private Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {
+            final def weatherApiKey = '9ecd4d849bec4bad904195112210302'
+            HttpResponse<Map> rsp = getTemperatureFromRemoteApi(cityAndState, weatherApiKey)
+            Temperature tempDomain = getTemperatureDomainFromHttpResponse(rsp)
+            tempDomain
+        }
+
+        private Temperature getTemperatureDomainFromHttpResponse(HttpResponse<Map> rsp) {
+            Map body = rsp.body()
+            Map location = body.location as Map
+            Map current = body.current as Map
+            Map tempPayloadMap = [city: location.name, state: location.region, temp: current.temp_c]
+            Map tempConstructorMap = [description: "${tempPayloadMap.city}|${tempPayloadMap.state}", payload:
+                    tempPayloadMap]
+            Temperature tempDomain = new Temperature(tempConstructorMap)
+            tempDomain
+        }
+
+        private HttpResponse<Map> getTemperatureFromRemoteApi(Map cityAndState, weatherApiKey) {
+            def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}"
+            HttpRequest request = HttpRequest.GET("/current.json?key=${weatherApiKey}&q=${cityStateQueryParameter}")
+            HttpResponse<Map> rsp = getClient().toBlocking().exchange(request, Argument.of(HashMap.class as Class<Object>)) as HttpResponse<Map>
+            rsp
+        }
+
         private OrgTreeSupplier getOrgTreeSupplier() {
             OrgRelationshipSupplier orgRelationshipsSupplier = getOrgRelationshipsSupplier()
             def root = orgRelationshipsSupplier.root
@@ -97,7 +107,7 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
             def builder = OrgTreeSupplier.Builder.newInstance(config)
             def orgTreeSupplier = builder.build()
         }
-        private getOrgRelationshipsSupplier() {
+        private OrgRelationshipSupplier getOrgRelationshipsSupplier() {
             def root = [:]
             List<Map> build = [[(OrgAddressKey.Root): root]]
             Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]

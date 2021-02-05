@@ -65,14 +65,14 @@ class TemperatureSupplierSpec extends Specification{
         true
     }
 
-//    def "test static newInstance"() {
-//        given:
-//        def builder = TemperatureSupplier.Builder.newInstance([:])
-//        assert builder
-//        def supplier = builder.build()
-//        expect:
-//        supplier
-//        def supply = supplier.get()
-//        supply
-//    }
+    def "test static newInstance"() {
+        given:
+        def builder = TemperatureSupplier.Builder.newInstance([:])
+        assert builder
+        def supplier = builder.build()
+        expect:
+        supplier
+        def supply = supplier.get()
+        supply
+    }
 }
