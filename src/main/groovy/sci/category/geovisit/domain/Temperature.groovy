@@ -15,4 +15,8 @@ class Temperature{
     Long id
     String description
     Map payload = new HashMap()
+    Temperature(Map cfg) {
+        description = cfg.description
+        payload = cfg.payload as Map
+    }
 }

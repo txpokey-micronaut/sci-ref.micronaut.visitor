@@ -7,8 +7,6 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxStreamingHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
-import sci.category.geovisit.constant.FactoryKey
-import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.domain.Temperature
 import spock.lang.Specification
 
@@ -57,6 +55,7 @@ class TemperatureSupplierSpec extends Specification{
         when:
         Map cityStateMap = [city: "plano", state: "tx"]
         Temperature tempDomain = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
+//        Temperature tempDomain = null
         tempDomain.save()
         then:
         def all = Temperature.all
@@ -66,18 +65,14 @@ class TemperatureSupplierSpec extends Specification{
         true
     }
 
-    def "test static newInstance"() {
-        given:
-//        def root = [:]
-//        List<Map> build = [[(OrgAddressKey.Root): root]]
-//        Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
-        def builder = TemperatureSupplier.Builder.newInstance([:])
-        assert builder
-        def supplier = builder.build()
-        expect:
-        supplier
-        def supply = supplier.get()
-        supply
-//        supplier.getRoot()
-    }
+//    def "test static newInstance"() {
+//        given:
+//        def builder = TemperatureSupplier.Builder.newInstance([:])
+//        assert builder
+//        def supplier = builder.build()
+//        expect:
+//        supplier
+//        def supply = supplier.get()
+//        supply
+//    }
 }
