@@ -17,7 +17,7 @@ import sci.category.geovisit.domain.OrgAddress
 import sci.category.geovisit.domain.Temperature
 
 import javax.inject.Inject
-@CompileStatic
+//@CompileStatic
 @Service(TemperatureSupplier)
 class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     private Map buildConfig
@@ -34,7 +34,6 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     RxStreamingHttpClient getClient() {
         return client
     }
-
 
     Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {
         final def weatherApiKey = '9ecd4d849bec4bad904195112210302'
@@ -61,58 +60,50 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         tempDomain
     }
 
-//    private TemperatureSupplier(Map _builder) {
-//        this.buildConfig = _builder.buildConfig
-//    }
+    TemperatureSupplier(Builder builder) {
+        buildConfig = builder.builderConfig as Map
+    }
 
-//    static class Builder implements BuildContract<TemperatureSupplier>{
-    static class Builder {
-//
+    static class Builder implements BuildContract<TemperatureSupplier>{
 //        @Inject
-//        TemperatureSupplier supplier
-//
-//        private Map buildConfig
-//
-//        static Builder newInstance(Map cfg) {
-//            return new Builder(cfg)
-//        }
-//
-//        private Builder(cfg) {
-//            buildConfig = cfg
-//        }
-//
-//        @Override
-//        TemperatureSupplier build() {
-////            OrgTreeSupplier orgTreeSupplier = getOrgTreeSupplier()
-//            OrgTreeSupplier orgTreeSupplier = null
-//            Graph graph = orgTreeSupplier.get()
-//            Iterator iterator = new BreadthFirstIterator(graph)
-//            List<Temperature> tempsList = iterator.collect { v ->
-//                OrgAddress oa = (OrgAddress) v
-//                Map payload = oa.payload
-//                Map cityAndState = [ city: payload.city, state: payload.state ]
-//                Temperature temp = getTemperatureByCityAndByStateViaHttp(cityAndState)
-//                temp
-//            }
-////            buildConfig[FactoryKey.Bootstrap] = tempsList
-//            this
-//        }
-//        private OrgTreeSupplier getOrgTreeSupplier() {
-//            OrgRelationshipSupplier orgRelationshipsSupplier = getOrgRelationshipsSupplier()
-//            def root = orgRelationshipsSupplier.root
-//            def bootstrapData = orgRelationshipsSupplier.get()
-//            def config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): bootstrapData]
-//            def builder = OrgTreeSupplier.Builder.newInstance(config)
-//            def orgTreeSupplier = builder.build()
-//        }
-//        private getOrgRelationshipsSupplier() {
-//            def root = [:]
-//            List<Map> build = [[(OrgAddressKey.Root): root]]
-//            Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
-//            def orgRelationshipsBuilder = OrgRelationshipSupplier.Builder.newInstance(config)
-//            assert orgRelationshipsBuilder
-//            def orgRelationshipsSupplier = orgRelationshipsBuilder.build()
-//        }
-//
+        private TemperatureSupplier supplier
+        private Map builderConfig
+        private Builder(Map cfg) {
+            builderConfig = cfg
+        }
+        static Builder newInstance(Map cfg) {
+            return new Builder(cfg)
+        }
+        @Override
+        TemperatureSupplier build() {
+            OrgTreeSupplier orgTreeSupplier = getOrgTreeSupplier()
+            Graph graph = orgTreeSupplier.get()
+            Iterator iterator = new BreadthFirstIterator(graph)
+            List<Temperature> tempsList = iterator.collect { v ->
+                OrgAddress oa = (OrgAddress) v
+                Map payload = oa.payload
+                Map cityAndState = [ city: payload.city, state: payload.state ]
+                Temperature temp = getTemperatureByCityAndByStateViaHttp(cityAndState)
+                temp
+            }
+            builderConfig[FactoryKey.Bootstrap] = tempsList
+            this
+        }
+        private OrgTreeSupplier getOrgTreeSupplier() {
+            OrgRelationshipSupplier orgRelationshipsSupplier = getOrgRelationshipsSupplier()
+            def root = orgRelationshipsSupplier.root
+            def bootstrapData = orgRelationshipsSupplier.get()
+            def config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): bootstrapData]
+            def builder = OrgTreeSupplier.Builder.newInstance(config)
+            def orgTreeSupplier = builder.build()
+        }
+        private getOrgRelationshipsSupplier() {
+            def root = [:]
+            List<Map> build = [[(OrgAddressKey.Root): root]]
+            Map config = [(OrgAddressKey.Root): root, (FactoryKey.Bootstrap): build]
+            def orgRelationshipsBuilder = OrgRelationshipSupplier.Builder.newInstance(config)
+            assert orgRelationshipsBuilder
+            def orgRelationshipsSupplier = orgRelationshipsBuilder.build()
+        }
     }
 }
