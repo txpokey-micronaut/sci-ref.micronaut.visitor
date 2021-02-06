@@ -88,6 +88,7 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
                     } //countiesMap
             } // statesMap
             List<Map> bootstrap = [root]
+            bootstrap += statesList
             bootstrap += countyList
             bootstrap += citiesList
             OrgAddress.saveAll(bootstrap)

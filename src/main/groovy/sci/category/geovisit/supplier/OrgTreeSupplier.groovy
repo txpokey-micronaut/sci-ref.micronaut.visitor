@@ -45,7 +45,7 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
             OrgTreeSupplier supplier = new OrgTreeSupplier(this)
             buildConfig.root = buildConfig[((OrgAddressKey.Root))]
             final def supplierGraph = supplier.get()
-            bootstrapData.stream().each { m ->
+            bootstrapData.each { m ->
                 def parent = m.payload[(OrgAddressKey.Parent)]
                 def child = m.payload[(OrgAddressKey.Child)]
                 guardedAddVertex(supplierGraph, parent)
