@@ -16,18 +16,11 @@ import javax.inject.Inject
 class TemperatureSupplierSpec extends Specification{
     @Inject
     @Client("https://api.weatherapi.com/v1")
-    RxStreamingHttpClient client // <
-
-    @Inject
-    TemperatureSupplier supplier
+    RxStreamingHttpClient httpClient // <
 
     def "sanityCheck"(){
         expect:
-        supplier
-        when:
-        RxStreamingHttpClient client = supplier.client
-        then:
-        client
+        httpClient
     }
     def "test TDD on http clienting for temperature by city and state"() {
         when:
@@ -51,23 +44,23 @@ class TemperatureSupplierSpec extends Specification{
         set.contains(tempDomain)
         true
     }
-    def "refactor TDD on http client for temperature by city and state"() {
-        when:
-        Map cityStateMap = [city: "plano", state: "tx"]
-        Temperature tempDomain = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
-//        Temperature tempDomain = null
-        tempDomain.save()
-        then:
-        def all = Temperature.all
-        1 <= all.size()
-        Set set = new HashSet( all )
-        set.contains(tempDomain)
-        true
-    }
+//    def "refactor TDD on http client for temperature by city and state"() {
+//        when:
+//        Map cityStateMap = [city: "plano", state: "tx"]
+//        Temperature tempDomain = supplier.getTemperatureByCityAndByStateViaHttp(cityStateMap)
+////        Temperature tempDomain = null
+//        tempDomain.save()
+//        then:
+//        def all = Temperature.all
+//        1 <= all.size()
+//        Set set = new HashSet( all )
+//        set.contains(tempDomain)
+//        true
+//    }
 
     def "test static newInstance"() {
         given:
-        def builder = TemperatureSupplier.Builder.newInstance([:])
+        def builder = TemperatureSupplier.Builder.newInstance([httpClient:httpClient])
         assert builder
         def supplier = builder.build()
         expect:

@@ -46,37 +46,52 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
                     list + map
             })
             def statesMap = parseFileToMaps.groupBy([{ m -> m.state }, { m -> m.county }])
+            def statesList = []
+            def countyList = []
             def citiesList = []
             def stateCountyMap = [:] // hysteresis for parent map
+            final def rootAddressMap =
+                    [description: "root", payload: [country: "usa", state: null, county:null, city:null]]
+            final def root = new OrgAddress(rootAddressMap)
+            rootAddressMap.payload[(OrgAddressKey.Parent)] = root
+            rootAddressMap.payload[(OrgAddressKey.Child)] = root
             statesMap.each {
                 stateKey, Map countiesMap ->
+                    def stateMap = [state: stateKey, county: null, city: null ]
+                    def stateAddessMap = [description: stateKey , payload: stateMap]
+                    def state = new OrgAddress(stateAddessMap)
+                    stateAddessMap.payload[(OrgAddressKey.Parent)] = root
+                    stateAddessMap.payload[(OrgAddressKey.Child)] = state
+                    statesList += state
                     countiesMap.each {
                         countyKey, List<Map> cityMapList ->
-                            cityMapList.each {
+                            def fullCountyKey = "${stateKey}|${countyKey}" as String
+                            def county = stateCountyMap.get(fullCountyKey)
+                            if ( null == county ) {
+                                def countyMap = [state: stateKey, county: countyKey, city: null ]
+                                def countyAddressMap = [description: fullCountyKey , payload: countyMap]
+                                county = new OrgAddress(countyAddressMap)
+                                countyAddressMap.payload[(OrgAddressKey.Parent)] = state
+                                countyAddressMap.payload[(OrgAddressKey.Child)] = county
+                                stateCountyMap[fullCountyKey] = county
+                                countyList += county
+                            } // if null == county
+                            cityMapList.unique{m -> m.city }.each {
                                 cityMap ->
-                                    def fullCountyKey = "${stateKey}|${countyKey}" as String
-                                    def countyOrgAddress = stateCountyMap.get(fullCountyKey)
-                                    if ( null == countyOrgAddress ) {
-                                        def countyPayloadMap = [state: stateKey, county: countyKey]
-                                        def countyAddressMap = [description: fullCountyKey, payload: countyPayloadMap]
-                                        countyOrgAddress = new OrgAddress(countyAddressMap)
-                                        stateCountyMap.put(fullCountyKey, countyOrgAddress)
-                                    }
                                     def fullCityKey = "${fullCountyKey}|${cityMap.city}" as String
                                     def cityAddressMap = [description: fullCityKey, payload: cityMap]
                                     def city = new OrgAddress(cityAddressMap)
                                     citiesList += city
-                                    cityAddressMap.payload[(OrgAddressKey.Parent)] = countyOrgAddress
+                                    cityAddressMap.payload[(OrgAddressKey.Parent)] = county
                                     cityAddressMap.payload[(OrgAddressKey.Child)] = city
                             } //cityMapList
                     } //countiesMap
             } // statesMap
-            OrgAddress.saveAll(citiesList)
-            OrgAddress.saveAll(stateCountyMap.values())
-            buildConfig[FactoryKey.Bootstrap] = citiesList
-            final def rootAddressMap = [description: "root", payload: [state: "State short", county: "County"]]
-            final def root = new OrgAddress(rootAddressMap)
-            root.save()
+            List<Map> bootstrap = [root]
+            bootstrap += countyList
+            bootstrap += citiesList
+            OrgAddress.saveAll(bootstrap)
+            buildConfig[FactoryKey.Bootstrap] = bootstrap
             buildConfig[OrgAddressKey.Root] = root
             supplier
         }

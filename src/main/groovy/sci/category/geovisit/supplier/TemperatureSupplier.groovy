@@ -1,12 +1,10 @@
 package sci.category.geovisit.supplier
 
-import grails.gorm.services.Service
-import groovy.transform.CompileStatic
+
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.client.RxStreamingHttpClient
-import io.micronaut.http.client.annotation.Client
 import org.jgrapht.Graph
 import org.jgrapht.traverse.BreadthFirstIterator
 import sci.category.geovisit.constant.FactoryKey
@@ -16,21 +14,20 @@ import sci.category.geovisit.contract.SupplierContract
 import sci.category.geovisit.domain.OrgAddress
 import sci.category.geovisit.domain.Temperature
 
-import javax.inject.Inject
 //@CompileStatic
-@Service(TemperatureSupplier)
+//@Service(TemperatureSupplier)
 class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     private Map buildConfig
-    private RxStreamingHttpClient client
+//    private RxStreamingHttpClient client
 
     @Override
     List<Temperature> get() {
         return buildConfig[FactoryKey.Bootstrap]
     }
-
-    RxStreamingHttpClient getClient() {
-        return client
-    }
+//
+//    RxStreamingHttpClient getClient() {
+//        return buildConfig.client
+//    }
 
     // TODO makes no sense. need to inject client into builder and then DI on constructor here
     TemperatureSupplier(Builder builder) {
@@ -42,36 +39,35 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     static class Builder implements BuildContract<TemperatureSupplier>{
 //        @Inject
 //        @Client("https://api.weatherapi.com/v1")
-        private RxStreamingHttpClient client
+//        private RxStreamingHttpClient client
         private Map builderConfig
 
         private Builder(Map cfg) {
             builderConfig = cfg
         }
-        private Builder(RxStreamingHttpClient _client, Map cfg) {
-            builderConfig = cfg
-            client = _client
-        }
         RxStreamingHttpClient getClient() {
-            return client
+            return builderConfig.httpClient as RxStreamingHttpClient
         }
-        static Builder newInstance(RxStreamingHttpClient client, Map cfg) {
-            return new Builder(client, cfg)
+        static Builder newInstance(Map cfg) {
+            return new Builder(cfg)
         }
         @Override
         TemperatureSupplier build() {
             OrgTreeSupplier orgTreeSupplier = getOrgTreeSupplier()
             Graph graph = orgTreeSupplier.get()
-            Iterator iterator = new BreadthFirstIterator(graph)
+            OrgAddress root = orgTreeSupplier.getRoot()
+            Iterator iterator = new BreadthFirstIterator(graph, root)
             List<Temperature> tempsList = iterator.collect { v ->
                 OrgAddress oa = (OrgAddress) v
                 Map payload = oa.payload
                 Map cityAndState = [ city: payload.city, state: payload.state ]
-                Temperature temp = getTemperatureByCityAndByStateViaHttp(cityAndState)
-                temp
+                if ( ! cityAndState.values().contains(null)) {
+                    Temperature temp = getTemperatureByCityAndByStateViaHttp(cityAndState)
+                    temp
+                }
             }
             builderConfig[FactoryKey.Bootstrap] = tempsList
-            this
+            TemperatureSupplier supplier = new TemperatureSupplier(this)
         }
 
         private Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {

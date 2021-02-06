@@ -8,6 +8,7 @@ import spock.lang.Specification
 
 @MicronautTest(packages="sci.category.geovisit")
 class OrgTreeSupplierSpec extends Specification{
+
     void 'test persist root via gorm'() {
         given:
         OrgAddress p = buildRootMember()
