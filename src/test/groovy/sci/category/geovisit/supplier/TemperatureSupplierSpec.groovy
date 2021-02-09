@@ -24,8 +24,10 @@ class TemperatureSupplierSpec extends Specification{
     }
     def "test TDD on http clienting for temperature by city and state"() {
         when:
-        HttpRequest request = HttpRequest.GET('/current.json?key=9ecd4d849bec4bad904195112210302&q=plano,tx')
-        HttpResponse<Map> rsp = client.toBlocking().exchange(request, Argument.of(HashMap.class))
+        def uriAsString = '/current.json?key=9ecd4d849bec4bad904195112210302&q=Naval Anacost Annex,DC'
+                .replaceAll(/\s/,'%20')
+        HttpRequest request = HttpRequest.GET(uriAsString )
+        HttpResponse<Map> rsp = httpClient.toBlocking().exchange(request, Argument.of(HashMap.class))
 
         then: 'the endpoint can be accessed'
         rsp.status == HttpStatus.OK // <5>

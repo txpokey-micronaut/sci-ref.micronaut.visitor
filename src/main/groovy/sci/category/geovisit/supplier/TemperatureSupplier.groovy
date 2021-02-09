@@ -1,6 +1,6 @@
 package sci.category.geovisit.supplier
 
-
+import groovy.util.logging.Slf4j
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -16,6 +16,7 @@ import sci.category.geovisit.domain.Temperature
 
 //@CompileStatic
 //@Service(TemperatureSupplier)
+@Slf4j
 class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     private Map buildConfig
 //    private RxStreamingHttpClient client
@@ -89,7 +90,8 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         }
 
         private HttpResponse<Map> getTemperatureFromRemoteApi(Map cityAndState, weatherApiKey) {
-            def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}"
+            def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}".replaceAll(/\s/,'%20')
+            log.info(cityStateQueryParameter)
             HttpRequest request = HttpRequest.GET("/current.json?key=${weatherApiKey}&q=${cityStateQueryParameter}")
             HttpResponse<Map> rsp = getClient().toBlocking().exchange(request, Argument.of(HashMap.class as Class<Object>)) as HttpResponse<Map>
             rsp
