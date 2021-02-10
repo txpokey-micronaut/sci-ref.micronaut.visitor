@@ -70,21 +70,22 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         private Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {
             final def weatherApiKey = '9ecd4d849bec4bad904195112210302'
             HttpResponse<Map> rsp = getTemperatureFromRemoteApi(cityAndState, weatherApiKey)
-            Map responseMap = handleNullResponseUseCase(cityAndState, rsp)
+            Map responseMap = getMapFromHttpResponseWhileHandleNullResponseUseCase(cityAndState, rsp)
             Temperature tempDomain = getTemperatureDomainFromHttpResponse(responseMap)
             tempDomain
         }
-        static final Double ABSOLUTE_ZERO = -273.15d
 
-        private Map handleNullResponseUseCase(Map cityAndState, HttpResponse<Map> rsp) {
+        private Map getMapFromHttpResponseWhileHandleNullResponseUseCase(Map cityAndState, HttpResponse<Map> rsp) {
             Map map = [:]
-            if (null == rsp) {
+            if (Objects.isNull(rsp)) {
+                final Double ABSOLUTE_ZERO = -273.15d
+                final def errorUseCaseReferenceMap =
+                        [status: HttpStatus.I_AM_A_TEAPOT, current: [temp_c: ABSOLUTE_ZERO]]
                 map.location = [name: cityAndState.city, region: cityAndState.state]
-                map.current = [temp_c: ABSOLUTE_ZERO]
-                map['status'] = HttpStatus.I_AM_A_TEAPOT
+                map.putAll(errorUseCaseReferenceMap)
             } else {
                 map.putAll(rsp.body())
-                map['status'] = rsp.status()
+                map.status = rsp.status()
             }
             return map
         }

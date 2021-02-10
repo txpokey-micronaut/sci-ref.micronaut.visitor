@@ -1,5 +1,6 @@
 package sci.category.geovisit.supplier
 
+import groovy.stream.Stream
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
 import sci.category.geovisit.contract.BuildContract
@@ -88,10 +89,7 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
                             } //cityMapList
                     } //countiesMap
             } // statesMap
-            List<Map> bootstrap = [root]
-            bootstrap += statesList
-            bootstrap += countyList
-            bootstrap += citiesList
+            def bootstrap = Stream.from([root], statesList, countyList, citiesList).inject([]) { all, l -> all += l }
             OrgAddress.saveAll(bootstrap)
             buildConfig[FactoryKey.Bootstrap] = bootstrap
             buildConfig[OrgAddressKey.Root] = root

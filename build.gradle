@@ -36,6 +36,9 @@ dependencies {
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
     // https://mvnrepository.com/artifact/org.jgrapht/jgrapht-core
     implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.0'
+    // https://mvnrepository.com/artifact/com.bloidonia/groovy-stream
+    implementation group: 'com.bloidonia', name: 'groovy-stream', version: '0.9.1'
+
 }
 
 

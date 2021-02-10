@@ -1,5 +1,6 @@
 package sci.category.geovisit.supplier
 
+import groovy.stream.Stream
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import sci.category.geovisit.constant.FactoryKey
 import sci.category.geovisit.constant.OrgAddressKey
@@ -9,6 +10,17 @@ import spock.lang.Specification
 class OrgRelationshipSupplierSpec extends Specification{
     final static DELIMIT = "[|]"
 
+    def "sanityCheckListAssembler"(){
+        given:
+        List<Map> root = [[root: "i am root"]]
+        List<Map> statesList = [[state: "KS"]]
+        List<Map> countyList = [[county: "Luthor"]]
+        List<Map> citiesList = [[city: "Smallville"]]
+        def bootstrap = Stream.from( root, statesList,countyList,citiesList ).inject([]){ all, l -> all += l }
+        expect:
+        bootstrap
+        bootstrap.size() == 4
+    }
     def "test explicit TDD build"() {
         given:
         def parseFileToMaps = new File("src/main/resources/citiesUsa.csv").readLines().inject([], {
@@ -53,7 +65,8 @@ class OrgRelationshipSupplierSpec extends Specification{
         def supplier = builder.build()
         expect:
         supplier
-        supplier.get()
-        supplier.getRoot()
+        def supply = supplier.get()
+        def rootVerify = supplier.getRoot()
+        true
     }
 }
