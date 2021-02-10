@@ -15,44 +15,39 @@ import sci.category.geovisit.contract.SupplierContract
 import sci.category.geovisit.domain.OrgAddress
 import sci.category.geovisit.domain.Temperature
 
-//@CompileStatic
-//@Service(TemperatureSupplier)
 @Slf4j
 class TemperatureSupplier implements SupplierContract<List<Temperature>>{
     private Map buildConfig
-//    private RxStreamingHttpClient client
 
     @Override
     List<Temperature> get() {
         return buildConfig[FactoryKey.Bootstrap]
     }
-//
-//    RxStreamingHttpClient getClient() {
-//        return buildConfig.client
-//    }
 
     // TODO makes no sense. need to inject client into builder and then DI on constructor here
     TemperatureSupplier(Builder builder) {
         buildConfig = builder.builderConfig as Map
     }
+
     TemperatureSupplier() {
     }
 
     static class Builder implements BuildContract<TemperatureSupplier>{
-//        @Inject
-//        @Client("https://api.weatherapi.com/v1")
-//        private RxStreamingHttpClient client
+
         private Map builderConfig
 
         private Builder(Map cfg) {
             builderConfig = cfg
         }
+
         RxStreamingHttpClient getClient() {
             return builderConfig.httpClient as RxStreamingHttpClient
         }
+
         static Builder newInstance(Map cfg) {
             return new Builder(cfg)
         }
+
         @Override
         TemperatureSupplier build() {
             OrgTreeSupplier orgTreeSupplier = getOrgTreeSupplier()
@@ -62,8 +57,8 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
             List<Temperature> tempsList = iterator.collect { v ->
                 OrgAddress oa = (OrgAddress) v
                 Map payload = oa.payload
-                Map cityAndState = [ city: payload.city, state: payload.state ]
-                if ( ! cityAndState.values().contains(null)) {
+                Map cityAndState = [city: payload.city, state: payload.state]
+                if (!cityAndState.values().contains(null)) {
                     Temperature temp = getTemperatureByCityAndByStateViaHttp(cityAndState)
                     temp
                 }
@@ -75,14 +70,15 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         private Temperature getTemperatureByCityAndByStateViaHttp(Map cityAndState) {
             final def weatherApiKey = '9ecd4d849bec4bad904195112210302'
             HttpResponse<Map> rsp = getTemperatureFromRemoteApi(cityAndState, weatherApiKey)
-            Map responseMap = handleNullResponseUseCase(cityAndState,rsp)
+            Map responseMap = handleNullResponseUseCase(cityAndState, rsp)
             Temperature tempDomain = getTemperatureDomainFromHttpResponse(responseMap)
             tempDomain
         }
         static final Double ABSOLUTE_ZERO = -273.15d
+
         private Map handleNullResponseUseCase(Map cityAndState, HttpResponse<Map> rsp) {
             Map map = [:]
-            if ( null == rsp ) {
+            if (null == rsp) {
                 map.location = [name: cityAndState.city, region: cityAndState.state]
                 map.current = [temp_c: ABSOLUTE_ZERO]
                 map['status'] = HttpStatus.I_AM_A_TEAPOT
@@ -94,7 +90,6 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         }
 
         private Temperature getTemperatureDomainFromHttpResponse(Map body) {
-//            Map body = rsp.body()
             Map location = body.location as Map
             Map current = body.current as Map
             Map tempPayloadMap = [city: location.name, state: location.region, temp: current.temp_c]
@@ -105,7 +100,7 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
         }
 
         private HttpResponse<Map> getTemperatureFromRemoteApi(Map cityAndState, weatherApiKey) {
-            def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}".replaceAll(/\s/,'%20')
+            def cityStateQueryParameter = "${cityAndState.city},${cityAndState.state}".replaceAll(/\s/, '%20')
             log.info(cityStateQueryParameter)
             HttpResponse<Map> rsp = null
             try {
@@ -125,6 +120,7 @@ class TemperatureSupplier implements SupplierContract<List<Temperature>>{
             def builder = OrgTreeSupplier.Builder.newInstance(config)
             def orgTreeSupplier = builder.build()
         }
+
         private OrgRelationshipSupplier getOrgRelationshipsSupplier() {
             def root = [:]
             List<Map> build = [[(OrgAddressKey.Root): root]]

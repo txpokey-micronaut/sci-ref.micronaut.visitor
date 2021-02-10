@@ -19,6 +19,7 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
     List<OrgAddress> get() {
         return buildConfig[FactoryKey.Bootstrap]
     }
+
     OrgAddress getRoot() {
         buildConfig[OrgAddressKey.Root]
     }
@@ -51,14 +52,14 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
             def citiesList = []
             def stateCountyMap = [:] // hysteresis for parent map
             final def rootAddressMap =
-                    [description: "root", payload: [country: "usa", state: null, county:null, city:null]]
+                    [description: "root", payload: [country: "usa", state: null, county: null, city: null]]
             final def root = new OrgAddress(rootAddressMap)
             rootAddressMap.payload[(OrgAddressKey.Parent)] = root
             rootAddressMap.payload[(OrgAddressKey.Child)] = root
             statesMap.each {
                 stateKey, Map countiesMap ->
-                    def stateMap = [state: stateKey, county: null, city: null ]
-                    def stateAddessMap = [description: stateKey , payload: stateMap]
+                    def stateMap = [state: stateKey, county: null, city: null]
+                    def stateAddessMap = [description: stateKey, payload: stateMap]
                     def state = new OrgAddress(stateAddessMap)
                     stateAddessMap.payload[(OrgAddressKey.Parent)] = root
                     stateAddessMap.payload[(OrgAddressKey.Child)] = state
@@ -67,16 +68,16 @@ class OrgRelationshipSupplier implements SupplierContract<List<OrgAddress>>{
                         countyKey, List<Map> cityMapList ->
                             def fullCountyKey = "${stateKey}|${countyKey}" as String
                             def county = stateCountyMap.get(fullCountyKey)
-                            if ( null == county ) {
-                                def countyMap = [state: stateKey, county: countyKey, city: null ]
-                                def countyAddressMap = [description: fullCountyKey , payload: countyMap]
+                            if (null == county) {
+                                def countyMap = [state: stateKey, county: countyKey, city: null]
+                                def countyAddressMap = [description: fullCountyKey, payload: countyMap]
                                 county = new OrgAddress(countyAddressMap)
                                 countyAddressMap.payload[(OrgAddressKey.Parent)] = state
                                 countyAddressMap.payload[(OrgAddressKey.Child)] = county
                                 stateCountyMap[fullCountyKey] = county
                                 countyList += county
                             } // if null == county
-                            cityMapList.unique{m -> m.city }.each {
+                            cityMapList.unique { m -> m.city }.each {
                                 cityMap ->
                                     def fullCityKey = "${fullCountyKey}|${cityMap.city}" as String
                                     def cityAddressMap = [description: fullCityKey, payload: cityMap]

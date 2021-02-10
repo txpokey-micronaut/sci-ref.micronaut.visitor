@@ -19,7 +19,6 @@ class Application {
         Micronaut.run(Application, args)
         bootstrap()
     }
-//    @PostConstruct
     private static void bootstrap() {
         log.info("PING!")
     }

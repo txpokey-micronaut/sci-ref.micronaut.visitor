@@ -22,6 +22,7 @@ class OrgTreeSupplier implements SupplierContract<Graph>{
     OrgAddress getRoot() {
         return builder.buildConfig.root
     }
+
     private OrgTreeSupplier() {}
 
     private OrgTreeSupplier(Builder _builder) {
