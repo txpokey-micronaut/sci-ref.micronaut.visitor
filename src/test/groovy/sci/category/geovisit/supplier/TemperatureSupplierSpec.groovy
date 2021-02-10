@@ -22,6 +22,13 @@ class TemperatureSupplierSpec extends Specification{
         expect:
         httpClient
     }
+
+    def "sanityCheck2"() {
+        given:
+        final Double ABSOLUTE_ZERO = -273.15d
+        expect:
+        ABSOLUTE_ZERO
+    }
     def "test TDD on http clienting for temperature by city and state"() {
         when:
         def uriAsString = '/current.json?key=9ecd4d849bec4bad904195112210302&q=Naval Anacost Annex,DC'
@@ -70,4 +77,5 @@ class TemperatureSupplierSpec extends Specification{
         def supply = supplier.get()
         supply
     }
+
 }
