@@ -2,7 +2,7 @@ package sci.category.geovisit.dsl.example
 
 import spock.lang.Specification
 
-class EmailModelTest extends Specification{
+class EmailModelSpec extends Specification{
     void "Email"() {
         given:
         EmailModel emailModel = new EmailModel()
