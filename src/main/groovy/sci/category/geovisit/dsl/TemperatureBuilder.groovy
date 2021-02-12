@@ -11,12 +11,15 @@ import sci.category.geovisit.domain.Temperature
 @Slf4j
 class TemperatureBuilder{
     private Map config = [:]
+
+    TemperatureBuilder(Map _config) {
+        config.putAll(_config)
+    }
+
     private getClient() {
         config.httpClient as RxStreamingHttpClient
     }
-    void setUp( Map cfg ) {
-        config = cfg
-    }
+
     Temperature get(Map cityAndState) {
         Temperature result = getTemperatureByCityAndByStateViaHttp(cityAndState)
     }
