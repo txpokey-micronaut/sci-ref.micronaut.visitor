@@ -54,16 +54,16 @@ class TemperatureSupplierSpec extends Specification{
         set.contains(tempDomain)
         true
     }
-
-    def "test static newInstance"() {
-        given:
-        def builder = TemperatureSupplier.Builder.newInstance([httpClient: httpClient])
-        assert builder
-        def supplier = builder.build()
-        expect:
-        supplier
-        def supply = supplier.get()
-        supply
-    }
+// uncomment these lines to actually run the visitor pattern
+//    def "test static newInstance"() {
+//        given:
+//        def builder = TemperatureSupplier.Builder.newInstance([httpClient: httpClient])
+//        assert builder
+//        def supplier = builder.build()
+//        expect:
+//        supplier
+//        def supply = supplier.get()
+//        supply
+//    }
 
 }
