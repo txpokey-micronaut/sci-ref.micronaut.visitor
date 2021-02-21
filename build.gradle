@@ -43,7 +43,7 @@ dependencies {
 
 
 application {
-    mainClass.set("sci.category.Application")
+    mainClass.set("sci.category.geovisit.Application")
 }
 
 java {
